@@ -13,7 +13,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <Link href="/" className="font-bold text-xl tracking-tight text-blue-600">
-            MonitorKPI
+            RSU Monitor KPI
           </Link>
           {user && (
             <nav className="hidden md:flex items-center gap-4 text-sm font-medium">
@@ -28,7 +28,7 @@ export default function Navbar() {
             </nav>
           )}
         </div>
-        
+
         <div className="flex items-center gap-4">
           {user ? (
             <>

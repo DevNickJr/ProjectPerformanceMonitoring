@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Project Monitor",
+  title: "RSU Monitor KPI",
   description: "Real-time project KPI monitoring",
 };
 
