@@ -6,6 +6,7 @@ const kpiEntrySchema = new mongoose.Schema({
   plannedValue: { type: Number, required: true }, // PV
   earnedValue: { type: Number, required: true }, // EV
   actualCost: { type: Number, required: true }, // AC
+  taskCompletionPercentage: { type: Number, min: 0, max: 100, default: 0 },
   nonConformances: { type: Number, default: 0 },
   safetyIncidents: { type: Number, default: 0 },
   enteredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },

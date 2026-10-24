@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RSU Monitor KPI",
-  description: "Real-time project KPI monitoring",
+  title: "RSU Project Monitor KPI - Real-Time Project Performance Monitoring",
+  description: "Development of a Web Application For Real-Time Project Performance Monitoring by NLUMANZE, Zerubbabel Chiwendu (MEM.2024/FT/MEC/0024)",
 };
 
 export default function RootLayout({
@@ -35,6 +36,7 @@ export default function RootLayout({
           <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8">
             {children}
           </main>
+          <Footer />
         </AuthProvider>
       </body>
     </html>

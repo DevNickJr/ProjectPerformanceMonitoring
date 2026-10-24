@@ -40,6 +40,12 @@ router.post('/:projectId', authenticate, async (req, res) => {
 
     await entry.save();
 
+    // If weekly entry provided task completion percentage, update project overall progress
+    if (req.body.taskCompletionPercentage !== undefined && req.body.taskCompletionPercentage !== null) {
+      project.taskCompletionPercentage = Number(req.body.taskCompletionPercentage);
+      await project.save();
+    }
+
     // Calculate metrics
     const metrics = calculateMetrics(entry, project.budgetAtCompletion);
 
