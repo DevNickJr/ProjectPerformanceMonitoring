@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import { Printer, Download, X } from "lucide-react";
+import { motion } from "motion/react";
 import { formatCurrency, getCurrencySymbol } from "@/lib/currency";
 
 interface PrintableReportProps {
@@ -326,9 +327,14 @@ export default function PrintableReport({
   if (isModal) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[92vh] overflow-y-auto relative animate-in fade-in">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[92vh] overflow-y-auto relative border border-slate-200/80"
+        >
           {content}
-        </div>
+        </motion.div>
       </div>
     );
   }

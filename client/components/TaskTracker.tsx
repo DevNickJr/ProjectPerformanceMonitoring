@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckSquare, Plus, Trash2, Edit3, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { CheckSquare, Plus, Trash2, CheckCircle2, Clock, AlertCircle, X, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import api from "@/lib/api";
 
 export interface ProjectTask {
@@ -108,54 +109,61 @@ export default function TaskTracker({
   const pendingCount = tasks.filter((t) => t.status === "Pending").length;
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm mb-8">
+    <div className="glass-card rounded-2xl p-6 sm:p-7 shadow-xs">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-5 border-b border-slate-100 gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <CheckSquare className="text-emerald-600" size={20} />
-            <h3 className="text-lg font-bold text-slate-800">
-              Task Breakdown & Completion Status
-            </h3>
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/60 shadow-2xs">
+            <CheckSquare size={18} />
           </div>
-          <p className="text-xs text-slate-500 mt-1">
-            Track individual work packages and aggregate project task progress
-          </p>
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight">
+              Work Packages & Task Completion Status
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Granular tracking of deliverables and aggregate completion percentage
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
           {canEdit && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-colors shadow-sm"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition-all shadow-xs shadow-blue-500/20 cursor-pointer"
             >
               <Plus size={15} />
-              <span>Add Task</span>
-            </button>
+              <span>Add New Task</span>
+            </motion.button>
           )}
         </div>
       </div>
 
-      {/* Overview Stat bar */}
+      {/* Overview Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 py-5 border-b border-slate-100 items-center">
-        {/* Large completion gauge card */}
-        <div className="sm:col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 rounded-xl flex items-center justify-between">
-          <div>
-            <span className="text-xs uppercase tracking-wider font-semibold text-slate-400 block mb-1">
-              Overall Task Completion
+        {/* Large completion card */}
+        <div className="sm:col-span-2 relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-5 rounded-2xl shadow-md border border-slate-700/50">
+          <div className="absolute -right-8 -bottom-8 w-28 h-28 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+          
+          <div className="relative z-10">
+            <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400 block mb-1">
+              Aggregate Task Completion
             </span>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-extrabold text-emerald-400">
+            <div className="flex items-baseline gap-3">
+              <span className="text-4xl font-black text-emerald-400 font-mono tracking-tight">
                 {overallCompletionPercentage}%
               </span>
-              <span className="text-xs text-slate-300">
-                ({completedCount} of {tasks.length} tasks finished)
+              <span className="text-xs text-slate-300 font-medium">
+                ({completedCount} of {tasks.length} tasks completed)
               </span>
             </div>
-            {/* Progress bar inside card */}
-            <div className="w-full h-2 bg-slate-700 rounded-full mt-3 overflow-hidden">
+
+            {/* Glowing progress bar */}
+            <div className="w-full h-2.5 bg-slate-700/80 rounded-full mt-3.5 overflow-hidden p-0.5 border border-slate-600/40">
               <div
-                className="h-full bg-emerald-400 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full transition-all duration-700 shadow-sm shadow-emerald-400/50"
                 style={{ width: `${overallCompletionPercentage}%` }}
               />
             </div>
@@ -163,32 +171,34 @@ export default function TaskTracker({
         </div>
 
         {/* Breakdown mini-cards */}
-        <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex flex-col justify-center">
-          <span className="text-xs font-medium text-emerald-800 uppercase tracking-wider">
+        <div className="bg-emerald-50/70 border border-emerald-100/80 p-4 rounded-2xl flex flex-col justify-center shadow-2xs">
+          <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">
             Completed Tasks
           </span>
-          <span className="text-2xl font-bold text-emerald-700 mt-1">{completedCount}</span>
+          <span className="text-2xl font-black text-emerald-700 mt-1">{completedCount}</span>
+          <span className="text-[10px] text-emerald-600 mt-0.5">Sign-off verified</span>
         </div>
 
-        <div className="bg-amber-50 border border-amber-100 p-4 rounded-xl flex flex-col justify-center">
-          <span className="text-xs font-medium text-amber-800 uppercase tracking-wider">
+        <div className="bg-amber-50/70 border border-amber-100/80 p-4 rounded-2xl flex flex-col justify-center shadow-2xs">
+          <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
             In Progress / Pending
           </span>
-          <span className="text-2xl font-bold text-amber-700 mt-1">
+          <span className="text-2xl font-black text-amber-700 mt-1">
             {inProgressCount + pendingCount}
           </span>
+          <span className="text-[10px] text-amber-600 mt-0.5">Active work items</span>
         </div>
       </div>
 
       {/* Task List Table */}
       <div className="pt-4">
         {tasks.length === 0 ? (
-          <div className="text-center py-8 text-slate-500 text-sm">
+          <div className="text-center py-10 text-slate-400 text-sm">
             <p>No tasks recorded yet for this project.</p>
             {canEdit && (
               <button
                 onClick={() => setShowAddModal(true)}
-                className="mt-3 text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-1 text-xs"
+                className="mt-2 text-blue-600 hover:text-blue-700 font-semibold inline-flex items-center gap-1 text-xs cursor-pointer"
               >
                 <Plus size={14} />
                 Create your first task
@@ -198,37 +208,37 @@ export default function TaskTracker({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="text-xs text-slate-500 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
+              <thead className="text-[11px] text-slate-400 uppercase tracking-wider bg-slate-50/70 border-b border-slate-100 rounded-xl">
                 <tr>
-                  <th className="py-3 px-4">Task Name</th>
-                  <th className="py-3 px-4">Assignee</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 w-48">Completion %</th>
-                  <th className="py-3 px-4">Due Date</th>
-                  {canEdit && <th className="py-3 px-4 text-right">Actions</th>}
+                  <th className="py-3 px-4 font-semibold">Deliverable / Task Name</th>
+                  <th className="py-3 px-4 font-semibold">Assignee</th>
+                  <th className="py-3 px-4 font-semibold">Status</th>
+                  <th className="py-3 px-4 w-48 font-semibold">Completion %</th>
+                  <th className="py-3 px-4 font-semibold">Due Date</th>
+                  {canEdit && <th className="py-3 px-4 text-right font-semibold">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {tasks.map((task) => (
-                  <tr key={task._id || task.title} className="hover:bg-slate-50/60 transition-colors">
+                  <tr key={task._id || task.title} className="hover:bg-slate-50/70 transition-colors">
                     <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-800">{task.title}</div>
+                      <div className="font-semibold text-slate-800 text-sm">{task.title}</div>
                       {task.description && (
                         <div className="text-xs text-slate-400 max-w-xs truncate">{task.description}</div>
                       )}
                     </td>
-                    <td className="py-3.5 px-4 text-xs text-slate-600">
+                    <td className="py-3.5 px-4 text-xs text-slate-600 font-medium">
                       {task.assignedTo || "Unassigned"}
                     </td>
                     <td className="py-3.5 px-4">
                       <button
                         onClick={() => handleToggleStatus(task)}
                         disabled={!canEdit}
-                        className={`px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 border transition-colors ${
+                        className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1.5 border transition-all cursor-pointer ${
                           task.status === "Completed"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200/80 shadow-2xs"
                             : task.status === "In Progress"
-                            ? "bg-blue-50 text-blue-700 border-blue-200"
+                            ? "bg-blue-50 text-blue-700 border-blue-200/80 shadow-2xs"
                             : "bg-slate-100 text-slate-600 border-slate-200"
                         }`}
                       >
@@ -239,10 +249,10 @@ export default function TaskTracker({
                       </button>
                     </td>
                     <td className="py-3.5 px-4">
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-slate-200 h-2 rounded-full overflow-hidden">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/60 p-0.2">
                           <div
-                            className={`h-full rounded-full ${
+                            className={`h-full rounded-full transition-all duration-300 ${
                               task.completionPercentage === 100
                                 ? "bg-emerald-500"
                                 : task.completionPercentage > 50
@@ -252,7 +262,7 @@ export default function TaskTracker({
                             style={{ width: `${task.completionPercentage}%` }}
                           />
                         </div>
-                        <span className="text-xs font-bold text-slate-700 w-9 text-right">
+                        <span className="text-xs font-bold text-slate-800 w-10 text-right font-mono">
                           {task.completionPercentage}%
                         </span>
                       </div>
@@ -268,14 +278,14 @@ export default function TaskTracker({
                         />
                       )}
                     </td>
-                    <td className="py-3.5 px-4 text-xs text-slate-600">
+                    <td className="py-3.5 px-4 text-xs text-slate-500 font-mono">
                       {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "—"}
                     </td>
                     {canEdit && task._id && (
                       <td className="py-3.5 px-4 text-right">
                         <button
                           onClick={() => handleDeleteTask(task._id!)}
-                          className="text-slate-400 hover:text-red-600 p-1 rounded transition-colors"
+                          className="text-slate-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
                           title="Delete task"
                         >
                           <Trash2 size={15} />
@@ -290,116 +300,132 @@ export default function TaskTracker({
         )}
       </div>
 
-      {/* Add Task Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-xl shadow-xl border border-slate-200 max-w-md w-full p-6 animate-in fade-in zoom-in-95">
-            <h3 className="text-lg font-bold text-slate-900 mb-1">Add New Project Task</h3>
-            <p className="text-xs text-slate-500 mb-4">
-              Create a task package with estimated completion percentage
-            </p>
-
-            <form onSubmit={handleAddTask} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Task Title *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Structural Framing Inspection"
-                  value={newTask.title}
-                  onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                  className="w-full text-sm p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
+      {/* Add Task Modal with AnimatePresence */}
+      <AnimatePresence>
+        {showAddModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white rounded-2xl shadow-2xl border border-slate-200/80 max-w-md w-full p-6"
+            >
+              <div className="flex justify-between items-center mb-1">
+                <h3 className="text-lg font-bold text-slate-900">Add New Project Task</h3>
+                <button 
+                  onClick={() => setShowAddModal(false)}
+                  className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                >
+                  <X size={18} />
+                </button>
               </div>
+              <p className="text-xs text-slate-500 mb-5">
+                Create a project work package with estimated completion percentage
+              </p>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Description / Deliverable
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Complete mechanical installation checks"
-                  value={newTask.description}
-                  onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                  className="w-full text-sm p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+              <form onSubmit={handleAddTask} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Assignee
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Task Title *
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. Lead Engineer"
-                    value={newTask.assignedTo}
-                    onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
-                    className="w-full text-sm p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                    required
+                    placeholder="e.g. Structural Framing Inspection"
+                    value={newTask.title}
+                    onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                    className="w-full text-sm p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Due Date
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Description / Deliverable
                   </label>
                   <input
-                    type="date"
-                    value={newTask.dueDate}
-                    onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
-                    className="w-full text-sm p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+                    type="text"
+                    placeholder="e.g. Complete mechanical installation checks"
+                    value={newTask.description}
+                    onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                    className="w-full text-sm p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
                   />
                 </div>
-              </div>
 
-              <div>
-                <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                  <span>Initial Completion Percentage</span>
-                  <span className="text-blue-600 font-bold">{newTask.completionPercentage}%</span>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      Assignee
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Lead Engineer"
+                      value={newTask.assignedTo}
+                      onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
+                      className="w-full text-sm p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      Due Date
+                    </label>
+                    <input
+                      type="date"
+                      value={newTask.dueDate}
+                      onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                      className="w-full text-sm p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
+                    />
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="5"
-                  value={newTask.completionPercentage}
-                  onChange={(e) =>
-                    setNewTask({
-                      ...newTask,
-                      completionPercentage: Number(e.target.value),
-                      status:
-                        Number(e.target.value) === 100
-                          ? "Completed"
-                          : Number(e.target.value) > 0
-                          ? "In Progress"
-                          : "Pending",
-                    })
-                  }
-                  className="w-full h-2 accent-blue-600 cursor-pointer"
-                />
-              </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm disabled:opacity-70"
-                >
-                  {loading ? "Adding..." : "Add Task"}
-                </button>
-              </div>
-            </form>
+                <div>
+                  <div className="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                    <span>Initial Completion Percentage</span>
+                    <span className="text-blue-600 font-bold font-mono">{newTask.completionPercentage}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={newTask.completionPercentage}
+                    onChange={(e) =>
+                      setNewTask({
+                        ...newTask,
+                        completionPercentage: Number(e.target.value),
+                        status:
+                          Number(e.target.value) === 100
+                            ? "Completed"
+                            : Number(e.target.value) > 0
+                            ? "In Progress"
+                            : "Pending",
+                      })
+                    }
+                    className="w-full h-2 accent-blue-600 cursor-pointer"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2.5 pt-4 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-5 py-2 text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-xl transition-all shadow-xs disabled:opacity-70 cursor-pointer"
+                  >
+                    {loading ? "Adding..." : "Add Task Package"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }
